@@ -1,6 +1,6 @@
 # Agent Spec
 
-The agent spec defines how OpenClaw operates your Life OS. The actual spec lives in your vault at `vault/system/agent-spec.md`.
+The agent spec defines how OpenClaw operates OpenClaw Notebook. The actual spec lives in your vault at `vault/system/agent-spec.md`.
 
 ## What It Contains
 
