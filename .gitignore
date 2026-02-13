@@ -1,0 +1,25 @@
+# Obsidian
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/plugins/recent-files-obsidian/data.json
+.trash/
+.DS_Store
+
+# OpenClaw (recreated automatically)
+AGENTS.md
+HEARTBEAT.md
+CLAUDE.md
+.openclaw/
+
+# Sensitive
+.env
+openclaw.json
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# Node
+node_modules/
