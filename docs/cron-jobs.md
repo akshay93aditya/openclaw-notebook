@@ -8,9 +8,9 @@ All scheduled automations that run in the background.
 
 | Job | Time | Model | What It Does |
 |-----|------|-------|-------------|
-| morning-setup | 8:00 AM | Sonnet | Creates daily note + sends Telegram briefing |
-| gap-detector | 12, 3, 7, 10 PM (weekdays) | Haiku | Nudges if calendar gaps + uncleared links |
-| eod-checkin | 11:00 PM | Sonnet | Interactive: lists uncompleted tasks, asks what's done |
+| morning-setup | 8:00 AM | Sonnet | Creates daily note + sends briefing (merged — saves a Sonnet call vs. running separately) |
+| gap-detector | 12, 3, 7, 10 PM (weekdays) | Haiku | Nudges if calendar gaps + uncleared links (4x/day, not every 30 min — cost optimized) |
+| eod-checkin | 11:00 PM | Sonnet | Interactive: lists uncompleted tasks, asks what's done, does metadata hygiene |
 | task-rollover | 11:30 PM | Sonnet | Rolls tasks forward, escalates at 3+ days |
 | personal-dates | 9:00 AM | Haiku | Checks for upcoming important dates |
 
@@ -22,6 +22,16 @@ All scheduled automations that run in the background.
 | link-followup | Monday 9:00 AM | Haiku | Follows up on last week's links |
 | weekly-review | Sunday 7:00 PM | Sonnet | Interactive review via Telegram |
 | weekly-calendar | Sunday 8:00 PM | Sonnet | Proposes next week's schedule |
+| project-social-media | Monday 9:00 AM | Haiku | Creates weekly blog/social recurring tasks |
+
+## One-Shot Items
+
+**Important rule:** Never create one-shot cron jobs. Route one-time items to:
+- Daily note (task with a due date)
+- Apple Reminders (micro-task with a time/date)
+- Google Calendar Deadlines (important date)
+
+Cron is ONLY for recurring automations.
 
 ## Managing Crons
 

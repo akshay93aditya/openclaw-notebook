@@ -90,6 +90,44 @@ Use Eisenhower Matrix (filter) + Impact-Effort Matrix (rank):
 - Never delete tasks/notes without explicit instruction
 - Never mute or disable reminders
 - Always preserve indentation and nesting structure
+- Never create one-shot cron jobs — route to daily note, reminders, or calendar instead
+
+---
+
+## EOD Metadata Hygiene
+
+During the 11 PM check-in, also scan for:
+- Tasks without 📅 due dates → suggest dates
+- Tasks without priority markers → suggest priority
+- Micro-tasks sitting in daily note that should be in Apple Reminders → offer to move
+- Present as a batch for approval, don't auto-fix
+
+---
+
+## Wiki-Link Rules
+
+When writing to daily notes, always use `[[wiki-links]]` for:
+- Project references → `[[Project Name]]`
+- Ideas → create page in `projects/idea-dump/` and link
+- Recurring concepts → link to canonical pages
+
+Don't link: plain task descriptions, dates, generic words.
+
+---
+
+## Micro-Task Detection
+
+**Always a micro-task** (→ Apple Reminders): phone calls, quick bookings, quick checks, sending a message, small purchases.
+
+**Never a micro-task** (→ daily note): anything with subtasks, planning, drafting, research, deep thinking.
+
+---
+
+## Work Block Calendar Rules
+
+- Work blocks go on the "Work Blocks" sub-calendar
+- All work blocks set as "free" (transparent) so meetings can still be scheduled over them
+- Default daily blocks from meta-structure.md are recurring weekday events
 
 ---
 

@@ -1,253 +1,282 @@
 # 📓 OpenClaw Notebook
 
-**A complete personal operating system powered by [OpenClaw](https://openclaw.ai), Obsidian, and AI.**
+An AI-powered personal OS that keeps your notes, calendar, and reminders perpetually in sync.
 
-Turn your Obsidian vault into an intelligent productivity system with an AI agent that manages your tasks, calendar, reminders, and daily notes — all from Telegram.
+Built on [OpenClaw](https://openclaw.ai), Obsidian, Google Calendar, Apple Reminders, and Telegram.
 
-Built in a single day. Runs for ~$40-80/month.
+> **Full disclosure:** I didn't write any code for this. I supervised [Claude Code](https://claude.ai/code) while it built the entire thing — every script, every config, every integration. If this helps you, [buy me a coffee ☕](https://buymeacoffee.com/akshay93aditya)
 
 ---
 
-## What It Does
+## Why I Built This
+
+I've tried every productivity tool out there. And my biggest problem with all of them is that they are optimized for use only inside *their* interface.
+
+Some are great calendars but terrible note-takers. Some are great note-takers but terrible task managers. And most "all-in-one" tools are mediocre at everything. So I end up using 3-4 different apps, and that means having duplicate tasks, conflicting calendars, and things falling through the cracks. The inefficiency of this drives me insane.
+
+Here's what I actually use:
+- **Obsidian** for notes. It's the smoothest, most flexible tool out there. But it's rough on mobile, and I can't quickly capture things on the go.
+- **Notion Calendar** for calendar. I like the UI (I just liked Cron and have never switched. RIP). But it's bad at quick edits and terrible at giving repeated nudges for small tasks.
+- **Apple Reminders** for micro-tasks. iOS system-level notifications are unbeatable. But it doesn't talk to anything else.
+
+The way I see it: my notes, my reminders, and my calendar should be **perpetually in sync**. I should be able to enter or edit anything from anywhere and the system should just figure it out. Tasks should self-sort. Reminders should auto-fire. Calendar blocks should auto-schedule. And I shouldn't have to babysit any of it.
+And I have seen the tools that offer some versions of this, but again; they are close to what I want, not EXACTLY what I want. I don't mind paying the $20/mo for this stuff, it's that I pay the $20 and I am still getting a tool that does not do exactly what I want the way I want it.
+
+So I built this. OpenClaw Notebook.
+
+**Obsidian** is the note-taker and task manager. **Telegram** is the quick-capture interface (solves the mobile problem entirely). **Google Calendar** is the calendar (I use Notion Calendar as the UI layer). **Apple Reminders** is the nagger. And **OpenClaw** is the nervous system that connects everything: it checks, aligns, routes, and syncs across all of them.
+
+I know there are a thousand personal assistants built on OpenClaw. This is just the one that works for me. Maybe it works for you too.
+
+---
+
+## How It Works
 
 ```
 You (Telegram, Obsidian, Calendar, Reminders)
         │
         ▼
-OpenClaw (AI agent on your Mac)
+OpenClaw (AI agent running on your Mac)
         │
-        ├── 📝 Obsidian vault — tasks, notes, daily logs
-        ├── 📅 Google Calendar — time blocks, meetings, deadlines
-        ├── ⏰ Apple Reminders — micro-tasks, location triggers, nags
-        └── 💬 Telegram — briefings, check-ins, quick capture
+        ├── 📝 Obsidian: tasks, notes, daily logs
+        ├── 📅 Google Calendar: time blocks, meetings
+        ├── ⏰ Apple Reminders: micro-tasks, nags
+        └── 💬 Telegram: briefings, quick capture
         │
         ▼
-Daily Note = single source of truth for each day
+Daily Note = single source of truth
 ```
 
-**Message your Telegram bot** → AI parses it → routes to the right place. That's it.
+Everything flows into your daily note. Whether you type it in Obsidian, message your Telegram bot, add a calendar event, or check off a reminder, it all ends up in that day's note. Dashboards query daily notes. Weekly reviews aggregate from them. No separate database.
 
-- `/t Buy groceries by 5pm` → task in your daily note + Apple Reminder
-- `/n Met with Sarah, discussed pricing` → meeting note in today's log
-- `/l https://interesting-article.com` → saved to links inbox
-- Or just type naturally — the AI figures it out
+### What happens automatically
 
-## Key Features
+- **8 AM:** Morning briefing on Telegram with your prioritized tasks, calendar, and habits
+- **Throughout the day:** Tasks auto-sort using Eisenhower matrix + impact-effort scoring
+- **During work:** Nudges if you have calendar gaps and uncleared links
+- **11 PM:** Bot asks which uncompleted tasks are actually done (prevents phantom rollover)
+- **11:30 PM:** Remaining tasks roll to tomorrow. At 3+ days, you get an alert to reschedule or drop
+- **Sunday evening:** AI proposes next week's schedule, you confirm, calendar blocks created
 
-- **Morning briefings** — wake up to your prioritized tasks, calendar, and habit status
-- **Auto-prioritization** — Eisenhower matrix + impact-effort scoring, no manual sorting
-- **Task rollover** — uncompleted tasks carry forward with escalation at 3+ days
-- **EOD check-ins** — confirm what's done before rollover (no phantom tasks)
-- **Apple Reminders as nagger** — system-level notifications you can't ignore
-- **Location reminders** — "remind me to buy dog food near the pet store"
-- **Weekly planning** — AI proposes your week, you confirm
-- **4 modes** — Normal, Travel, Off, Weekend (auto-detects or manual switch)
-- **Shared layer** — shared calendar + reminders with partner
-- **Dashboards** — Dataview-powered task views, habit heatmaps, link tracking
-- **Everything is markdown** — no vendor lock-in, no hidden databases
+Plus: micro-tasks (≤15 min like phone calls, bookings) go straight to Apple Reminders with aggressive nag cycles. Bigger tasks stay in your daily note.
 
-## Architecture
+### Using it from Telegram
 
-```
-┌──────────────────────────────────────────────────┐
-│           Mac (always-on, or scheduled)           │
-│                                                   │
-│   OpenClaw Gateway (daemon, auto-starts)          │
-│   ├── Telegram bot (your interface)               │
-│   ├── Obsidian vault (direct filesystem r/w)      │
-│   ├── Google Calendar API (via gog)               │
-│   ├── Apple Reminders (native CLI)                │
-│   ├── Cron jobs (scheduled automations)           │
-│   └── Heartbeat (background monitoring)           │
-│                                                   │
-│   Obsidian Vault (git repo, local files)          │
-└──────────────────────────┬───────────────────────┘
-                           │ Git sync (5 min)
-            ┌──────────────┴──────────────┐
-            │  Other devices (optional)    │
-            │  Obsidian + Git              │
-            │  Working Copy on iOS         │
-            └─────────────────────────────┘
-```
+Just message your bot. Examples:
 
-## Cost
+- `/t Buy groceries by 5pm` → task (routes to Reminders if quick, daily note if not)
+- `/t! Call the bank NOW` → urgent reminder that nags immediately
+- `/n Met with Sarah, discussed pricing` → meeting note
+- `/l https://article.com` → saves to links inbox
+- `/j Feeling good about progress` → journal entry
+- `/h exercise` → marks habit done
+- `/today` → resends your briefing
+- Or just type naturally, Claude figures it out
 
-| Item | Cost |
-|------|------|
-| Anthropic API (Haiku/Sonnet/Opus) | ~$40-80/mo |
-| Obsidian | Free |
-| Git sync | Free |
-| Working Copy (iOS, optional) | $20 one-time |
-| Google Calendar | Free |
-| Apple Reminders | Free |
-| Telegram | Free |
-| OpenClaw | Free (open source) |
-
-**Cost optimization is built in.** Three-tier model routing (Haiku for simple ops, Sonnet for interactions, Opus on-demand only) keeps costs ~55-65% lower than running everything on Opus.
+**4 modes:** Normal (full automation), Travel (must-dos only), Off (personal only), Weekend (unstructured). Switch with `/travel` or `/off`, or it auto-detects.
 
 ---
 
-## Quick Start
+## The Stack
 
-### Prerequisites
+```
+Mac (always-on or scheduled wake)
+├── OpenClaw daemon (auto-starts on boot)
+│   ├── Telegram bot
+│   ├── Sonnet for 95% of interactions
+│   ├── Haiku for simple file ops
+│   ├── Opus only when needed (asks first)
+│   └── 10 cron jobs for automations
+├── Obsidian vault (git repo, all markdown)
+├── Google Calendar (4 sub-calendars)
+├── Apple Reminders (4-6 lists)
+└── Notion Calendar (optional UI)
 
-- macOS (Mac Mini, MacBook, or any always-on Mac)
-- [Obsidian](https://obsidian.md) installed
+Syncs: Mac ↔ GitHub ↔ other devices
+```
+
+**Everything is markdown.** No databases or external vendors. You own every file.
+
+I use git for syncing. There's a slight delay (~1-5 min) but it's fine. You can pay for Obsidian Sync if you want instant, but I'm minimizing costs. On iOS, Working Copy ($20 one-time) handles git. I don't use Obsidian on mobile; Telegram does everything I need.
+
+---
+
+## Cost
+
+| What | Cost |
+|------|------|
+| Anthropic API (setup) | ~$20 one-time |
+| Anthropic API (monthly) | ~$10-20/mo *(still optimizing)* |
+| Everything else | Free |
+
+Claude Max doesn't cover this; it's pay-per-use API at [console.anthropic.com](https://console.anthropic.com).
+
+Three-tier model routing keeps costs down: Haiku ($1/1M tokens) for simple ops, Sonnet ($3/1M) for interactions, Opus ($15/1M) only when you need it. About 55-65% cheaper than running everything on one model.
+
+---
+
+## Setup
+
+**You'll need:**
+- macOS (Mac Mini or MacBook, needs to stay on or wake on schedule)
+- [Obsidian](https://obsidian.md)
 - [Node.js](https://nodejs.org) ≥ 22
 - [Homebrew](https://brew.sh)
-- Anthropic API key ([console.anthropic.com](https://console.anthropic.com))
+- Anthropic API key from [console.anthropic.com](https://console.anthropic.com)
 - Telegram account
 
-### 1. Clone & Configure
+### Quick Setup (Recommended)
+
+One command does everything:
 
 ```bash
 cd ~/Documents
-git clone https://github.com/YOUR_USERNAME/openclaw-notebook.git
+git clone https://github.com/akshay93aditya/openclaw-notebook.git
 cd openclaw-notebook
+chmod +x scripts/*.sh
+./scripts/quick-setup.sh
 ```
 
-Run the setup wizard:
+This runs all setup steps in order. Or follow the manual steps below:
+
+### Manual Setup
+
+#### 1. Clone and configure
 
 ```bash
+cd ~/Documents
+git clone https://github.com/akshay93aditya/openclaw-notebook.git
+cd openclaw-notebook
+chmod +x scripts/*.sh
 ./scripts/setup.sh
 ```
 
-This will walk you through:
-- Setting your name, timezone, schedule
-- Replacing template placeholders with your details
-- Creating your `.env` file with API keys
+The setup wizard asks for your name, timezone, and schedule. It replaces all the template placeholders.
 
-### 2. Open in Obsidian
+#### 2. Set up Obsidian
 
-Open the `vault/` folder as an Obsidian vault. Install the required plugins:
+Open `vault/` as an Obsidian vault. Install these plugins:
 
-| Plugin | Purpose |
-|--------|---------|
-| Templater | Dynamic daily note generation |
-| Periodic Notes | Auto-create daily/weekly notes |
-| Tasks | Due dates, recurrence, priority |
-| Dataview | Dashboards and queries |
-| Obsidian Git | Free sync via GitHub |
-| Calendar | Sidebar calendar UI |
-| Heatmap Calendar | Habit tracking visualization |
-| Rollover Daily Todos | Auto-carry undone tasks |
-| Reminder | In-Obsidian notifications |
+- **Templater**: dynamic daily notes
+- **Periodic Notes**: auto-create daily/weekly notes
+- **Tasks**: due dates, recurrence, priority
+- **Dataview**: dashboards
+- **Obsidian Git**: free GitHub sync
+- **Calendar**: sidebar UI
+- **Heatmap Calendar**: habit visualization
+- **Rollover Daily Todos**: carry tasks forward
+- **Reminder**: in-app notifications
 
-See [docs/obsidian-setup.md](docs/obsidian-setup.md) for detailed plugin settings.
+See [docs/obsidian-setup.md](docs/obsidian-setup.md) for settings.
 
-### 3. Install OpenClaw
+#### 3. Install OpenClaw
 
 ```bash
 curl -fsSL https://openclaw.ai/install.sh | bash
 openclaw onboard --install-daemon
-```
 
-Install required skills:
-
-```bash
 npx clawhub install apple-reminders
 npx clawhub install obsidian
-brew install gog  # Google Calendar
+brew install gog  # Google Calendar CLI
 ```
 
-> ⚠️ **Gotcha:** API key goes in the `env` section of `openclaw.json`, not in auth profile. See [docs/gotchas.md](docs/gotchas.md).
+**Important:** Your API key goes in the `env` section of `openclaw.json`, NOT the auth profile. Read [docs/gotchas.md](docs/gotchas.md) first to save yourself headaches.
 
-### 4. Set Up Telegram Bot
+#### 4. Telegram bot
 
-1. Message [@BotFather](https://t.me/BotFather) on Telegram
-2. Create a new bot, save the token
-3. Add the token during OpenClaw onboarding
+Message [@BotFather](https://t.me/BotFather) on Telegram, create a bot, save the token. Add it during OpenClaw onboarding.
 
-### 5. Set Up Calendar & Reminders
+#### 5. Calendar and Reminders
 
 ```bash
 ./scripts/setup-calendar.sh   # Creates Google Calendar sub-calendars
 ./scripts/setup-reminders.sh  # Creates Apple Reminders lists
 ```
 
-### 6. Feed Context to OpenClaw
+Follow the prompts to create your calendar structure.
 
-Send the agent spec to your bot:
-
-```bash
-./scripts/onboard-agent.sh
-```
-
-This sends your system files (schedule, habits, recurring tasks, autonomy rules) to OpenClaw so it knows how to operate.
-
-### 7. Set Up Cron Jobs
+#### 6. Wire it up
 
 ```bash
-./scripts/setup-crons.sh
+./scripts/onboard-agent.sh  # Sends agent spec to your bot
+./scripts/setup-crons.sh    # Sets up all automations
+./scripts/health-check.sh   # Verifies everything works
 ```
 
-This configures all scheduled automations (morning briefing, EOD check-in, weekly review, etc.)
+Test: send `/today` to your bot. You should get a briefing.
 
-### 8. Test
-
-```bash
-./scripts/health-check.sh
-```
-
-Verifies: OpenClaw running, Telegram connected, calendar accessible, reminders working, git syncing.
+Full guide: [docs/setup-guide.md](docs/setup-guide.md)
 
 ---
 
-## Documentation
+## The Vault
 
-| Doc | What It Covers |
-|-----|----------------|
-| [Setup Guide](docs/setup-guide.md) | Complete step-by-step walkthrough |
-| [Obsidian Setup](docs/obsidian-setup.md) | Plugin installation and configuration |
-| [Agent Spec](docs/agent-spec.md) | How the AI agent behaves, commands, parsing |
-| [Cron Jobs](docs/cron-jobs.md) | All scheduled automations explained |
-| [Cost Guide](docs/cost-guide.md) | Model routing, optimization, cost calculator |
-| [Gotchas](docs/gotchas.md) | Everything that can go wrong (and fixes) |
-| [Customization](docs/customization.md) | How to adapt for your workflow |
+```
+vault/
+├── daily-notes/          # One file per day, center of everything
+├── weekly-reviews/       # Auto-generated summaries
+├── work/                 # Work projects
+├── projects/             # Personal projects
+├── notes/                # Clippings, reading notes, reference
+├── links/                # Link inbox (clear weekly)
+├── personal/             # Personal context, important dates
+├── dashboards/           # Task views, habit heatmaps
+├── templates/            # Daily note, travel, weekly review
+├── system/               # Config files
+│   ├── meta-structure.md     (your schedule)
+│   ├── recurring-tasks.md    (repeating tasks)
+│   ├── active-habits.md      (what to track)
+│   └── agent-spec.md         (the brain)
+└── bot-inbox/            # Telegram message staging
+```
 
----
-
-## Slash Commands
-
-| Command | What It Does |
-|---------|-------------|
-| `/t Buy groceries by 5pm` | Add task (auto-routes: micro → Reminders, else → daily note) |
-| `/t! Call the bank NOW` | Urgent micro-task → immediate Reminder nag |
-| `/n Met with Sarah, discussed X` | Meeting note → daily note |
-| `/n! Business idea: AI for Y` | Note + auto-create linked page |
-| `/l https://article.com` | Save link → daily note + Links/Inbox |
-| `/j Feeling good about progress` | Journal entry → daily note |
-| `/p project-name: Do the thing` | Project task → under that project |
-| `/h exercise` | Mark habit done |
-| `/today` | Resend today's briefing |
-| `/week` | This week's status |
-| `/travel` or `/travel Feb 12-14` | Activate travel mode |
-| `/off` or `/off Feb 15-22` | Activate vacation mode |
-| `/done [task text]` | Mark task complete everywhere |
-| Plain text | AI parses and routes automatically |
+All files use `lowercase-dashed` naming. Everything's editable in Obsidian: change your schedule, habits, or how the AI behaves by editing markdown.
 
 ---
 
-## How It's Different
+## Docs
 
-Most "productivity systems" are either a template pack you fill manually, or a SaaS tool you don't own.
+- [Setup Guide](docs/setup-guide.md): full walkthrough
+- [Obsidian Setup](docs/obsidian-setup.md): plugin configuration
+- [Agent Spec](docs/agent-spec.md): how the AI behaves
+- [Cron Jobs](docs/cron-jobs.md): all automations explained
+- [Cost Guide](docs/cost-guide.md): model routing, optimization
+- [Gotchas](docs/gotchas.md): things that broke (and fixes)
+- [Customization](docs/customization.md): adapt to your workflow
 
-This is **an AI agent that actually operates on your system.** It reads your vault, manages your calendar, nags you via native notifications, and talks to you on Telegram. And you own every file — it's all local markdown and git.
+---
+
+## What's Different
+
+Most productivity tools are either templates you fill manually, or SaaS apps you don't own.
+
+This is an AI agent that actually *operates* on your system. It reads your vault, manages your calendar, creates reminders, rolls over tasks, escalates blockers, and talks to you on Telegram. Anything you need to change can be done directly in Obsidian or via a message in Telegram. I prefer doing everything directly in Obsidian when I'm at my desk; it saves costs and I have more control. 
+
+And you own every file. It's all markdown and git. No subscription to lose your data.
 
 ---
 
 ## Built With
 
-- [OpenClaw](https://openclaw.ai) — Local AI agent framework
-- [Obsidian](https://obsidian.md) — Knowledge base
-- [Anthropic Claude](https://anthropic.com) — AI models (Haiku/Sonnet/Opus)
-- Google Calendar + Apple Reminders + Telegram
+- [OpenClaw](https://openclaw.ai): local AI agent framework
+- [Obsidian](https://obsidian.md): knowledge base
+- [Anthropic Claude](https://anthropic.com): Haiku / Sonnet / Opus
+- Google Calendar · Apple Reminders · Telegram
+- [Claude Code](https://claude.ai/code): built the entire system
 
 ---
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines. Issues and PRs welcome.
+See [CONTRIBUTING.md](CONTRIBUTING.md). Issues and PRs welcome.
+
+---
+
+## Support
+
+If this helps you, [buy me a coffee ☕](https://buymeacoffee.com/akshay93aditya)
+
+---
 
 ## License
 
@@ -255,4 +284,4 @@ MIT — see [LICENSE](LICENSE).
 
 ---
 
-*Built in a day. Runs your life thereafter.*
+*Built in a day by supervising Claude Code. Runs your life thereafter.*

@@ -10,23 +10,19 @@ The system uses three tiers to keep costs down:
 | Default | Sonnet 4.5 | $3 / $15 | Telegram interactions, critical crons, task routing |
 | Smart | Opus 4.5 | $15 / $75 | On-demand only — agent asks before using |
 
-## Daily Cost Breakdown
+## Setup Cost
 
-| Component | Estimated Daily Cost |
-|-----------|---------------------|
-| Heartbeat (12x/day, Haiku) | ~$0.05 |
-| Cron jobs (6 daily, Haiku/Sonnet mix) | ~$0.15-0.20 |
-| Telegram interactions (15-25 msgs, Sonnet) | ~$1.00-2.50 |
-| Weekly crons (amortized daily) | ~$0.03 |
-| **Total** | **~$1.30-2.80/day** |
+Expect ~$20 for the initial setup day. This involves heavy back-and-forth with Sonnet/Opus during onboarding and testing. Not representative of daily costs.
 
 ## Monthly Projections
 
 | Usage Level | Monthly Cost |
 |-------------|-------------|
-| Light (10 msgs/day, few crons) | ~$40 |
-| Normal (20 msgs/day, all crons) | ~$60-80 |
-| Heavy (30+ msgs, Opus usage) | ~$85+ |
+| Light (10 msgs/day, few crons) | ~$10 |
+| Normal (15-20 msgs/day, all crons) | ~$15-20 |
+| Heavy (30+ msgs, Opus usage) | ~$30+ |
+
+*These are early estimates — still being optimized.*
 
 ## Cost Reduction Tips
 
