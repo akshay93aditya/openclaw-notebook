@@ -30,6 +30,16 @@ I know there are a thousand personal assistants built on OpenClaw. This is just 
 
 ---
 
+## Important Disclaimer
+
+**This is not a plugin or fork of OpenClaw.** It's just a layer on top of it.
+
+I built this entire system for myself first, used it for a while to make sure it actually worked, and then copied it over and converted it into a template that others could use. The vault structure, templates, agent spec, and all the scripts are what I personally use daily. I just cleaned it up and made it generic enough to share.
+
+If you fork this, you're essentially getting my personal productivity system as a starting point. Customize it to fit your workflow.
+
+---
+
 ## How It Works
 
 ```
