@@ -9,6 +9,18 @@ Everything that broke during the original build — so it doesn't break for you.
 **API key location**
 Your Anthropic API key goes in the `env` section of `openclaw.json`, NOT in the auth profile.
 
+**Bootstrap truncation**
+If your agent starts mis-routing tasks or asking clarifying questions constantly, check:
+```bash
+openclaw config get agents.defaults.bootstrapMaxChars
+```
+Should be at least 25,000. The agent-spec.md alone is 11-13K bytes. If bootstrap is truncated, the model never sees your full routing logic.
+
+Fix:
+```bash
+openclaw config set agents.defaults.bootstrapMaxChars 25000
+```
+
 ```json
 {
   "env": {

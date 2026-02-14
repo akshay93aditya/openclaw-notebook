@@ -250,7 +250,8 @@ All files use `lowercase-dashed` naming. Everything's editable in Obsidian: chan
 - [Obsidian Setup](docs/obsidian-setup.md): plugin configuration
 - [Agent Spec](docs/agent-spec.md): how the AI behaves
 - [Cron Jobs](docs/cron-jobs.md): all automations explained
-- [Cost Guide](docs/cost-guide.md): model routing, optimization
+- [Cost Guide](docs/cost-guide.md): model routing, projections
+- [Optimization Guide](docs/optimization-guide.md): reduce costs, improve performance
 - [Gotchas](docs/gotchas.md): things that broke (and fixes)
 - [Customization](docs/customization.md): adapt to your workflow
 

@@ -44,14 +44,33 @@ openclaw cron remove --name "job-name"
 
 # Manually trigger a cron for testing
 openclaw cron trigger --name "morning-setup"
+
+# Edit a cron (change model, schedule, etc.)
+openclaw cron edit <uuid> --model anthropic/claude-sonnet-4-5
 ```
 
 ## Customizing
 
 Edit `scripts/setup-crons.sh` and re-run it. Key things to adjust:
-- **Times** — match your timezone and wake/sleep schedule
-- **Gap detector frequency** — reduce if too noisy
-- **Model tier** — switch Haiku jobs to Sonnet if quality is too low
+- **Times**: Match your timezone and wake/sleep schedule
+- **Gap detector frequency**: Reduce if too noisy (default 4x/day weekdays)
+- **Model tier**: Switch Haiku jobs to Sonnet if quality is too low
+
+## Optimization Tips
+
+**Consider consolidating crons to reduce costs:**
+
+- **task-rollover + eod-checkin**: Both run end-of-day. Merge into single 11PM job.
+- **weekly-calendar + weekly-review**: Both run Sunday evening. Combine the planning.
+- **personal-dates**: If checking daily, move to weekly review. Dates don't change daily.
+
+**Each cron costs:**
+- Haiku: ~$0.01-0.02 per run (bootstrap + execution)
+- Sonnet: ~$0.05-0.10 per run
+
+**Gap detector at 4x/day = 120 calls/month.** Consider reducing frequency or removing if low-value.
+
+See [docs/optimization-guide.md](optimization-guide.md) for detailed cost optimization strategies.
 
 ## Adding Custom Crons
 
